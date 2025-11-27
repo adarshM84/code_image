@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Image Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar / Controls -->
+        <aside class="sidebar">
+            <header>
+                <h1>CodeSnap</h1>
+                <p>Beautiful code screenshots</p>
+            </header>
+
+            <div class="control-group">
+                <label>Code Input</label>
+                <textarea id="codeInput" placeholder="Paste your code here...">module.exports = leftpad;
+
+function leftpad(str, len, ch) {
+  str = String(str);
+  var i = -1;
+  if (!ch && ch !== 0) ch = ' ';
+  len = len - str.length;
+  while (i++ < len) str = ch + str;
+  return str;
+}</textarea>
+            </div>
+
+            <div class="control-group">
+                <label>OS Style</label>
+                <div class="os-selector">
+                    <button class="os-btn active" data-os="mac">macOS</button>
+                    <button class="os-btn" data-os="win">Windows 10</button>
+                    <button class="os-btn" data-os="win11">Windows 11</button>
+                    <button class="os-btn" data-os="win7">Windows 7</button>
+                    <button class="os-btn" data-os="win98">Windows 98</button>
+                    <button class="os-btn" data-os="xp">Windows XP</button>
+                    <button class="os-btn" data-os="linux">Ubuntu</button>
+                    <button class="os-btn" data-os="gnome">GNOME</button>
+                    <button class="os-btn" data-os="kde">KDE Plasma</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Background Color</label>
+                <input type="color" id="bgColor" value="#c084fc">
+            </div>
+
+            <button id="downloadBtn" class="primary-btn">Download Image</button>
+        </aside>
+
+        <div class="resizer" id="dragHandle"></div>
+
+        <!-- Preview Area -->
+        <main class="preview-area">
+            <div id="captureContainer" class="capture-container">
+                <div id="windowFrame" class="window-frame window-mac">
+                    <div class="window-header">
+                        <div class="window-controls">
+                            <span class="control close"></span>
+                            <span class="control minimize"></span>
+                            <span class="control maximize"></span>
+                        </div>
+                        <div class="window-title">Untitled-1</div>
+                    </div>
+                    <div class="window-content">
+                        <pre><code id="codeDisplay" class="language-javascript"></code></pre>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
