@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fontSelect.addEventListener('change', (e) => {
         const font = e.target.value;
-        codeDisplay.style.fontFamily = font;
+        codeDisplay.style.setProperty('font-family', font, 'important');
     });
 
     lineNumbersToggle.addEventListener('change', (e) => {
