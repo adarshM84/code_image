@@ -848,7 +848,7 @@ code {
     border: 2px solid transparent;
     transition: all 0.2s;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
     /* Aspect ratio for card look */
     aspect-ratio: 1 / 0.8;
     display: flex;
@@ -975,4 +975,18 @@ input:checked+.slider:before {
 .window-kde .maximize::after {
     content: '^';
     font-size: 10px;
+}
+
+/* Resizer */
+.resizer {
+    width: 5px;
+    background-color: var(--border-color);
+    cursor: col-resize;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+
+.resizer:hover,
+.resizer.resizing {
+    background-color: var(--accent-color);
 }

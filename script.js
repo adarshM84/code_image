@@ -68,6 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update theme
             const theme = card.dataset.theme;
             prismThemeLink.href = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/${theme}`;
+
+            // Update background to match theme gradient
+            const bgGradient = card.dataset.bg;
+            if (bgGradient) {
+                captureContainer.style.background = bgGradient;
+            }
         });
     });
 
@@ -84,6 +90,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // Re-highlight to apply line numbers
         updateCode();
+    });
+
+    // Font Size Input
+    const fontSizeInput = document.getElementById('fontSizeInput');
+    fontSizeInput.addEventListener('input', (e) => {
+        codeDisplay.style.fontSize = e.target.value + 'px';
+    });
+
+    // Padding Input
+    const paddingInput = document.getElementById('paddingInput');
+    paddingInput.addEventListener('input', (e) => {
+        const padding = e.target.value + 'px';
+        windowFrame.querySelector('.window-content').style.padding = padding;
+    });
+
+    // Shadow Toggle
+    const shadowToggle = document.getElementById('shadowToggle');
+    shadowToggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            windowFrame.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.3)';
+        } else {
+            windowFrame.style.boxShadow = 'none';
+        }
     });
 
     // Resizing Logic
