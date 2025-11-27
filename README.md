@@ -54,9 +54,9 @@ Window 7
 ## 📦 Installation (Local)
 
 ```bash
-git clone https://github.com/yourusername/yourrepo.git
-cd yourrepo
-npx serve   # optional
+git clone https://github.com/adarshM84/code_image.git
+cd code_image
+then open html in browser
 ```
 
 Or simply open `index.html` in your browser.
