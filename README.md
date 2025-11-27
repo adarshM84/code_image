@@ -1,6 +1,6 @@
 # 📸 Code Image Generator
 
-![GitHub Stars](https://img.shields.io/github/stars/yourusername/yourrepo?style=for-the-badge\&color=yellow)
+![GitHub Stars](https://img.shields.io/github/stars/adarshM84/code_image?style=for-the-badge%5C&color=yellow)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Tech Stack](https://img.shields.io/badge/HTML%20%7C%20CSS%20%7C%20JavaScript-blue?style=for-the-badge)
 
