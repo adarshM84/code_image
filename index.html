@@ -35,6 +35,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/gifshot@0.4.5/dist/gifshot.min.js"></script>
     <link rel="stylesheet" href="style.css">
 
     <!-- Google tag (gtag.js) -->
@@ -174,6 +175,14 @@ function leftpad(str, len, ch) {
                             <span class="slider round"></span>
                         </label>
                     </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="downloadFormatSelect">Download Format</label>
+                    <select id="downloadFormatSelect">
+                        <option value="png" selected>PNG (Static Image)</option>
+                        <option value="gif">GIF (Animated)</option>
+                    </select>
                 </div>
 
                 <div class="control-group">

@@ -162,16 +162,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function downloadImage() {
         // Get user-selected download options
+        const downloadFormatSelect = document.getElementById('downloadFormatSelect');
         const downloadSizeSelect = document.getElementById('downloadSizeSelect');
         const rotationSelect = document.getElementById('rotationSelect');
+        const format = downloadFormatSelect.value;
         const scale = parseFloat(downloadSizeSelect.value);
         const rotation = parseInt(rotationSelect.value);
 
+        if (format === 'gif') {
+            downloadImageAsGIF(scale, rotation);
+        } else {
+            downloadImageAsPNG(scale, rotation);
+        }
+    }
+
+    function downloadImageAsPNG(scale, rotation) {
         // Use html2canvas to capture the container
         html2canvas(captureContainer, {
             scale: scale,
-            backgroundColor: null, // Transparent background if container has none
-            useCORS: true // If we had external images
+            backgroundColor: null,
+            useCORS: true
         }).then(canvas => {
             let finalCanvas = canvas;
 
@@ -188,6 +198,209 @@ document.addEventListener('DOMContentLoaded', () => {
             link.href = finalCanvas.toDataURL('image/png');
             link.click();
         });
+    }
+
+    async function downloadImageAsGIF(scale, rotation) {
+        // Show progress indicator
+        const downloadBtn = document.getElementById('downloadBtn');
+        const originalText = downloadBtn.textContent;
+        downloadBtn.textContent = 'Generating GIF...';
+        downloadBtn.disabled = true;
+
+        try {
+            // Store original code
+            const originalCode = codeDisplay.textContent;
+            const originalOpacity = windowFrame.style.opacity;
+
+            // Animation parameters
+            const totalFrames = 25;
+            const fadeFrames = 3;
+            const typingFrames = 17;
+            const holdFrames = 5;
+
+            // Array to store frame images
+            const frames = [];
+            let gifWidth = 0;
+            let gifHeight = 0;
+
+            // Frame 1-3: Fade in window
+            for (let i = 0; i < fadeFrames; i++) {
+                const opacity = (i + 1) / fadeFrames;
+                windowFrame.style.opacity = opacity;
+                codeDisplay.textContent = '';
+
+                const canvas = await captureFrame(scale);
+
+                // Store dimensions from first frame
+                if (i === 0) {
+                    gifWidth = canvas.width;
+                    gifHeight = canvas.height;
+                }
+
+                frames.push(canvas.toDataURL('image/png'));
+
+                downloadBtn.textContent = `Generating GIF... ${Math.round((i + 1) / totalFrames * 100)}%`;
+            }
+
+            windowFrame.style.opacity = 1;
+
+            // Frame 4-20: Typing animation
+            for (let i = 0; i < typingFrames; i++) {
+                const progress = (i + 1) / typingFrames;
+                const charCount = Math.floor(originalCode.length * progress);
+                const partialCode = originalCode.substring(0, charCount);
+
+                codeDisplay.textContent = partialCode;
+                Prism.highlightElement(codeDisplay);
+
+                const canvas = await captureFrame(scale);
+                frames.push(canvas.toDataURL('image/png'));
+
+                downloadBtn.textContent = `Generating GIF... ${Math.round((fadeFrames + i + 1) / totalFrames * 100)}%`;
+            }
+
+            // Frame 21-25: Hold final frame
+            codeDisplay.textContent = originalCode;
+            Prism.highlightElement(codeDisplay);
+
+            for (let i = 0; i < holdFrames; i++) {
+                const canvas = await captureFrame(scale);
+                frames.push(canvas.toDataURL('image/png'));
+
+                downloadBtn.textContent = `Generating GIF... ${Math.round((fadeFrames + typingFrames + i + 1) / totalFrames * 100)}%`;
+            }
+
+            // Restore original state
+            windowFrame.style.opacity = originalOpacity || 1;
+            codeDisplay.textContent = originalCode;
+            Prism.highlightElement(codeDisplay);
+
+            // Render GIF using gifshot with proper settings
+            downloadBtn.textContent = 'Encoding GIF...';
+
+            // Create a temporary image to verify dimensions
+            const testImg = new Image();
+            testImg.onload = function () {
+                console.log('Frame dimensions:', testImg.width, 'x', testImg.height);
+                console.log('Canvas dimensions:', gifWidth, 'x', gifHeight);
+
+                gifshot.createGIF({
+                    images: frames,
+                    gifWidth: testImg.width,
+                    gifHeight: testImg.height,
+                    interval: 0.1,
+                    numFrames: frames.length,
+                    frameDuration: 1,
+                    numWorkers: 2
+                }, function (obj) {
+                    if (!obj.error) {
+                        // Convert data URL to blob
+                        fetch(obj.image)
+                            .then(res => res.blob())
+                            .then(blob => {
+                                if (rotation !== 0) {
+                                    rotateGIF(blob, rotation, scale).then(finalBlob => {
+                                        downloadBlob(finalBlob, scale, rotation, 'gif');
+                                        downloadBtn.textContent = originalText;
+                                        downloadBtn.disabled = false;
+                                    });
+                                } else {
+                                    downloadBlob(blob, scale, rotation, 'gif');
+                                    downloadBtn.textContent = originalText;
+                                    downloadBtn.disabled = false;
+                                }
+                            });
+                    } else {
+                        console.error('GIF creation error:', obj.error);
+                        alert('Error generating GIF. Please try again.');
+                        downloadBtn.textContent = originalText;
+                        downloadBtn.disabled = false;
+                    }
+                });
+            };
+            testImg.src = frames[0];
+
+        } catch (error) {
+            console.error('GIF generation error:', error);
+            alert('Error generating GIF. Please try again.');
+            downloadBtn.textContent = originalText;
+            downloadBtn.disabled = false;
+        }
+    }
+
+    async function getImageWidth(dataUrl) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = function () {
+                resolve(img.width);
+            };
+            img.src = dataUrl;
+        });
+    }
+
+    async function getImageHeight(dataUrl) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = function () {
+                resolve(img.height);
+            };
+            img.src = dataUrl;
+        });
+    }
+
+    async function captureFrame(scale) {
+        return new Promise((resolve) => {
+            html2canvas(captureContainer, {
+                scale: scale,
+                backgroundColor: null,
+                useCORS: true
+            }).then(canvas => {
+                resolve(canvas);
+            });
+        });
+    }
+
+    async function rotateGIF(blob, rotation, scale) {
+        // For GIF rotation, we need to extract frames, rotate them, and re-encode
+        // This is a simplified approach - create rotated canvas from blob
+        return new Promise((resolve) => {
+            const img = new Image();
+            const url = URL.createObjectURL(blob);
+
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                if (rotation === 90 || rotation === 270) {
+                    canvas.width = img.height;
+                    canvas.height = img.width;
+                } else {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                }
+
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((rotation * Math.PI) / 180);
+                ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+                canvas.toBlob(function (rotatedBlob) {
+                    URL.revokeObjectURL(url);
+                    resolve(rotatedBlob);
+                }, 'image/gif');
+            };
+
+            img.src = url;
+        });
+    }
+
+    function downloadBlob(blob, scale, rotation, format) {
+        const link = document.createElement('a');
+        const sizeLabel = scale === 1 ? '' : `_${scale}x`;
+        const rotationLabel = rotation === 0 ? '' : `_${rotation}deg`;
+        link.download = `${selectedOS}-code-snap${sizeLabel}${rotationLabel}.${format}`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(link.href);
     }
 
     function rotateCanvas(canvas, degrees) {
