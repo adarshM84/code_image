@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Get user-selected download options
         const downloadSizeSelect = document.getElementById('downloadSizeSelect');
         const rotationSelect = document.getElementById('rotationSelect');
-        const scale = parseInt(downloadSizeSelect.value);
+        const scale = parseFloat(downloadSizeSelect.value);
         const rotation = parseInt(rotationSelect.value);
 
         // Use html2canvas to capture the container

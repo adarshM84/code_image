@@ -97,6 +97,10 @@ textarea {
     scrollbar-width: thin;
 }
 
+#codeInput {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
 .site-footer {
     margin-top: 60px;
     padding: 20px 0;
@@ -275,7 +279,7 @@ pre {
 }
 
 code {
-    font-family: 'Fira Code', monospace !important;
+    /* font-family: 'Fira Code', monospace !important; */
     font-size: 14px;
     line-height: 1.5;
 }

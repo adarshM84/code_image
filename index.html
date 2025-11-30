@@ -38,14 +38,14 @@
     <link rel="stylesheet" href="style.css">
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCQ4VH6CK8"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCQ4VH6CK8"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'G-FCQ4VH6CK8');
-    </script>
+    </script> -->
 </head>
 
 <body>
@@ -179,7 +179,10 @@ function leftpad(str, len, ch) {
                 <div class="control-group">
                     <label for="downloadSizeSelect">Download Size</label>
                     <select id="downloadSizeSelect">
+                        <option value="0.5">0.5x (Mobile/Shorts)</option>
+                        <option value="0.75">0.75x (Small)</option>
                         <option value="1">1x (Standard)</option>
+                        <option value="1.5">1.5x (Medium)</option>
                         <option value="2" selected>2x (High Quality)</option>
                         <option value="3">3x (Ultra Quality)</option>
                     </select>
